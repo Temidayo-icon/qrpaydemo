@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/black_shade_1"
+    tools:context=".HomeActivity">
+
+    <ImageView
+        android:layout_width="200dp"
+        android:layout_height="200dp"
+        android:src="@drawable/qrcode"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="50dp"
+        android:id="@+id/logo" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/logo"
+        android:id="@+id/heading"
+        android:layout_marginTop="20dp"
+        android:text="Scan To Pay"
+        android:textAlignment="center"
+        android:gravity="center"
+        android:padding="4dp"
+        android:textColor="@color/yellow"
+        android:textSize="20sp"
+        android:textStyle="bold" />
+    
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="20dp"
+        android:layout_marginEnd="20dp"
+        android:text="Generate QR Code"
+        android:layout_marginTop="20dp"
+        android:background="@drawable/button"
+        android:textAllCaps="false"
+        android:layout_below="@id/heading"
+        android:id="@+id/genbtn" />
+
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="20dp"
+        android:layout_marginEnd="20dp"
+        android:text="Scan QR Code"
+        android:layout_marginTop="20dp"
+        android:background="@drawable/button"
+        android:textAllCaps="false"
+        android:layout_below="@id/genbtn"
+        android:id="@+id/Scanbtn" />
+
+
+</RelativeLayout>
