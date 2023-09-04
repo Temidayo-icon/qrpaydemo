@@ -6,12 +6,65 @@ import android.os.Parcelable;
 import androidx.annotation.NonNull;
 
 public class User implements Parcelable{
+
+    public User(int pin) {
+        this.pin = pin;
+    }
+
+    private int pin;
+
+    public User(String userId, double amount) {
+        this.userId = String.valueOf(userId);
+        this.amount = amount;
+
+    }
+
+    public int getPin() {
+        return pin;
+    }
+
+    public void setPin(int pin) {
+        this.pin = pin;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    private String username;
+    public User(String userId) {
+        this.userId = String.valueOf(Integer.parseInt(String.valueOf(userId)));
+    }
+
+    public void setUserId(String userId) {
+        this.userId = String.valueOf(Integer.parseInt(userId));
+    }
+
     private String userId;
+
+    public void setQrCodeData(String qrCodeData) {
+        this.qrCodeData = qrCodeData;
+    }
+
+    public User(double amount) {
+        this.amount = amount;
+    }
+
     private String qrCodeData;
+
+    public void setAmount(double amount) {
+        this.amount = amount;
+    }
+
     private double amount;
 
-    public User(String userId, String qrCodeData) {
-        this.userId = userId;
+    public User(String userId, String username, double amount, int pin, String qrCodeData) {
+        this.userId = String.valueOf(userId);
+        this.username = username;
         this.qrCodeData = qrCodeData;
         this.amount = amount;
     }
@@ -31,7 +84,7 @@ public class User implements Parcelable{
     // Parcelable implementation methods
 
     protected User(Parcel in) {
-        userId = in.readString();
+        userId = String.valueOf(in.readString());
         qrCodeData = in.readString();
     }
 
@@ -60,7 +113,7 @@ public class User implements Parcelable{
     @Override
     public void writeToParcel(@NonNull Parcel dest, int flags) {
 
-        dest.writeString(userId);
+        dest.writeString(String.valueOf(userId));
         dest.writeString(qrCodeData);
 
     }

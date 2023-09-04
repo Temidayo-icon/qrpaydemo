@@ -46,11 +46,32 @@
         android:textSize="18sp" />
 
     <!-- Enter Amount to Transfer -->
+    <TextView
+        android:id="@+id/TextuserId"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/textViewBalanceAmount"
+        android:layout_marginTop="16dp"
+        android:textColorHint="@color/yellow"
+        android:hint="The system should fill in the user id(UserId)"
+        android:inputType="text|number" />
+
+    <TextView
+        android:id="@+id/Textusername"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/TextuserId"
+        android:layout_marginTop="16dp"
+        android:textColorHint="@color/yellow"
+        android:hint="The system should fill in the username(username)"
+        android:inputType="text" />
+
+    <!-- Enter Amount to Transfer -->
     <EditText
         android:id="@+id/editTextAmount"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/textViewBalanceAmount"
+        android:layout_below="@id/Textusername"
         android:layout_marginTop="16dp"
         android:textColorHint="@color/yellow"
         android:hint="Enter Amount to Transfer"

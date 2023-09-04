@@ -39,6 +39,9 @@ public class GenerateQRCode extends AppCompatActivity {
     private TextView gentext;
     private ImageView QRCode;
     private TextInputEditText editdata;
+    private TextInputEditText edituserid;
+    private TextInputEditText editpin;
+    private TextInputEditText editamount;
     private Button genbtn;
     private Bitmap bitmap;
     private List<User> users = new ArrayList<>();;
@@ -55,6 +58,9 @@ public class GenerateQRCode extends AppCompatActivity {
         gentext = findViewById(R.id.gentext);
         QRCode = findViewById(R.id.QRCode);
         editdata = findViewById(R.id.editdata);
+        edituserid = findViewById(R.id.editduserid);
+        editamount = findViewById(R.id.editamount);
+        editpin = findViewById(R.id.editpin);
         genbtn = findViewById(R.id.genbtn);
 
 
@@ -72,24 +78,31 @@ public class GenerateQRCode extends AppCompatActivity {
             }
         });
         // Dummy data (for demonstration)
-        users.add(new User("Elvina", "QRCodeData1"));
-        users.add(new User("Mayowa", "QRCodeData2"));
-        users.add(new User("Yemi", "QRCodeData3"));
-        users.add(new User("Ronke", "QRCodeData4"));
+        users.add(new User("Elvina","Elvina",500,1234, "QRCodeData1"));
+        users.add(new User("Mayowa","Mayowa",5000,1234, "QRCodeData2"));
+        users.add(new User("Yemi","Yemi",4000,1234, "QRCodeData3"));
+        users.add(new User("Ronke","Ronke",7000,1234, "QRCodeData4"));
 
     }
 
 
     public void generateBarcode() {
         String data = editdata.getText().toString();
-        if (data.isEmpty()) {
-            Toast.makeText(GenerateQRCode.this, "Please enter user id to generate QR code", Toast.LENGTH_SHORT).show();
+        String userid = edituserid.getText().toString();
+        int pin = Integer.parseInt(editpin.getText().toString());
+        double amount = Double.parseDouble(editamount.getText().toString());
+        if (data.isEmpty() || userid.isEmpty() || editpin.getText().toString().isEmpty() || editamount.getText().toString().isEmpty() ) {
+            Toast.makeText(GenerateQRCode.this, "Please enter all data required to generate QR code", Toast.LENGTH_SHORT).show();
         }
+
 
         for (User existingUser : users) {
             if (existingUser.getUserId().equals(data)) {
                 Toast.makeText(this, "Username already exists", Toast.LENGTH_SHORT).show();
                 return;
+            }
+            else if(existingUser.getUserId().equals(userid)){
+                Toast.makeText(this, "UserId already exists", Toast.LENGTH_SHORT).show();
             }
         }
 
@@ -121,7 +134,7 @@ public class GenerateQRCode extends AppCompatActivity {
 
 
             // Create a new user and save it
-            User newUser = new User(data, qrCodeData);
+            User newUser = new User(data,userid, amount, pin, qrCodeData);
            users.add(newUser);
             } catch (WriterException e) {
                 e.printStackTrace();

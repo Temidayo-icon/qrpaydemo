@@ -2,6 +2,7 @@ package com.example.qrpaydemo;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
@@ -29,6 +30,10 @@ public class WalletBalanceActivity extends AppCompatActivity {
     private TextView textViewBalanceAmount;
     private EditText editTextAmount;
     private EditText editTextPin;
+
+    private TextView TextuserId;
+
+    private TextView Textusername;
     private Button buttonSendMoney;
     private ProgressBar progressBar;
 
@@ -74,12 +79,19 @@ public class WalletBalanceActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_wallet_balance);
 
+        // Get the context of the current activity
+        Context context = this;
+
+
         // Initialize UI elements
         textViewBalanceAmount = findViewById(R.id.textViewBalanceAmount);
         editTextAmount = findViewById(R.id.editTextAmount);
         editTextPin = findViewById(R.id.editTextPin);
         buttonSendMoney = findViewById(R.id.buttonSendMoney);
         progressBar =  findViewById(R.id.progressBar);
+        TextuserId = findViewById(R.id.TextuserId);
+        Textusername = findViewById(R.id.Textusername);
+
 
         textViewBalanceAmount.setText("Balance: $" + walletBalance);
 
@@ -93,6 +105,27 @@ public class WalletBalanceActivity extends AppCompatActivity {
                 // Get the amount to transfer and PIN entered by the user
                 String amountText = editTextAmount.getText().toString();
                 String pinText = editTextPin.getText().toString();
+                double amountTexts = Double.parseDouble(editTextAmount.getText().toString());
+                int pinTexts = Integer.parseInt(editTextPin.getText().toString());
+                String userId = TextuserId.getText().toString();
+                String username = Textusername.getText().toString();
+
+                offlineTransactionDatabaseHelper dbHelper = new offlineTransactionDatabaseHelper(context);
+                User newUser = new User(userId,username,amountTexts,pinTexts,null);
+
+                // Insert the transaction into the database
+                long newRowId = dbHelper.insertTransaction(newUser);
+
+                if (newRowId != -1) {
+                    // Insertion was successful, show a success message
+
+                    Toast.makeText(WalletBalanceActivity.this,"Transaction added successfully", Toast.LENGTH_SHORT).show();
+                } else {
+                    // Insertion failed, show an error message
+                    Toast.makeText(WalletBalanceActivity.this, "Failed to add transaction", Toast.LENGTH_SHORT).show();
+                }
+
+
 
                 if (!amountText.isEmpty() && !pinText.isEmpty()) {
                     // Parse the amount
@@ -123,7 +156,7 @@ public class WalletBalanceActivity extends AppCompatActivity {
                                     imageViewSuccess.setVisibility(View.VISIBLE);
 
                                     // Create a new offline transaction
-                                    User transaction = new User(currentUser.getUserId(), String.valueOf(transferAmount));
+                                    User transaction = new User(currentUser.getUserId(), transferAmount);
 
                                     // Add the transaction to the list of offline transactions
                                     offlineTransactions.add(transaction);
@@ -178,6 +211,8 @@ public class WalletBalanceActivity extends AppCompatActivity {
         // You should implement your actual logic to handle money transfers.
         System.out.println("Transferred $" + amount + " to the receiver.");
     }
+
+
 
 
 }
