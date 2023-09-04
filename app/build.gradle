@@ -43,7 +43,8 @@ dependencies {
     //implementation ('eu.livotov.labs.android:CAMView:2.0.1@aar') {transitive=true}
     implementation 'com.google.android.material:material:1.9.0'
     implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
-    //implementation 'xyz.belvi.mobilevision:barcodescanner:2.0.3'
+    implementation 'com.google.code.gson:gson:2.8.9'
+    //implementation 'xyz.belvi.mobilevision:barcode scanner:2.0.3'
     //implementation 'me.dm7.barcodescanner:zxing:1.9.13'
     def camerax_version = "1.0.0-beta07"
     implementation "androidx.camera:camera-camera2:$camerax_version"

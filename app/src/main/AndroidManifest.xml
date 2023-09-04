@@ -8,6 +8,22 @@
 
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.VIBRATE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.NEARBY_WIFI_DEVICES"
+        android:usesPermissionFlags="neverForLocation"
+        tools:targetApi="s" />
+
+
+    <uses-permission
+        android:required="true"
+        android:name="android.permission.ACCESS_WIFI_STATE"/>
+    <uses-permission
+        android:required="true"
+        android:name="android.permission.CHANGE_WIFI_STATE"/>
+    <uses-permission
+        android:required="true"
+        android:name="android.permission.INTERNET"/>
+
 
     <uses-feature android:name="android.hardware.camera.any" />
 
@@ -21,6 +37,9 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Qrpaydemo"
         tools:targetApi="31">
+        <activity
+            android:name=".WalletBalanceActivity"
+            android:exported="false" />
         <activity
             android:name=".ToolbarCaptureActivity"
             android:exported="false" />

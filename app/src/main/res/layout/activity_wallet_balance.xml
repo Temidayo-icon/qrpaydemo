@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/black_shade_1"
+    tools:context=".WalletBalanceActivity">
+
+    <!-- Wallet Background (Top Right) -->
+    <ImageView
+        android:id="@+id/imageViewWalletBackground"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentRight="true"
+        android:layout_marginTop="16dp"
+        android:layout_marginRight="16dp"
+        android:src="@drawable/wallet_background"
+        android:contentDescription="Wallet Background" />
+
+
+
+    <!-- Header: Wallet Balance -->
+    <TextView
+        android:id="@+id/textViewBalance"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="16dp"
+        android:text="Wallet Balance"
+        android:textColor="@color/yellow"
+        android:textSize="24sp"
+        android:textStyle="bold" />
+
+    <!-- Display Wallet Balance -->
+    <TextView
+        android:id="@+id/textViewBalanceAmount"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/textViewBalance"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="16dp"
+        android:textColor="@color/yellow"
+        android:text="Balance: $100.00"
+        android:textSize="18sp" />
+
+    <!-- Enter Amount to Transfer -->
+    <EditText
+        android:id="@+id/editTextAmount"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/textViewBalanceAmount"
+        android:layout_marginTop="16dp"
+        android:textColorHint="@color/yellow"
+        android:hint="Enter Amount to Transfer"
+        android:inputType="numberDecimal" />
+
+    <!-- Enter Verification PIN -->
+    <EditText
+        android:id="@+id/editTextPin"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/editTextAmount"
+        android:layout_marginTop="16dp"
+        android:hint="Enter Verification PIN"
+        android:textColorHint="@color/yellow"
+        android:inputType="numberPassword" />
+
+    <!-- Send Money Button -->
+    <Button
+        android:id="@+id/buttonSendMoney"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/editTextPin"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="16dp"
+        android:text="Send Money" />
+
+    <!-- Progress Bar -->
+    <ProgressBar
+        android:id="@+id/progressBar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/buttonSendMoney"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="16dp"
+        android:visibility="gone"
+        android:indeterminate="true" />
+
+    <!-- ImageView for displaying success icon -->
+    <ImageView
+        android:id="@+id/imageViewSuccess"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/progressBar"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="16dp"
+        android:src="@drawable/ic_success"
+        android:contentDescription="Success Icon"
+        android:visibility="gone" /> <!-- Initially set to GONE -->
+
+
+
+</RelativeLayout>
