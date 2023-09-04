@@ -119,8 +119,11 @@ public class GenerateQRCode extends AppCompatActivity {
 
                 // Generate QR code data
                 String qrCodeData = "User ID " + data;
+            // Create a new user and save it
+            User newUser = new User(data,userid, amount, pin, qrCodeData);
+            users.add(newUser);
                 // Use ZXing library to generate the QR code
-                bitmap = generateQRCode(data, dimen, dimen);
+                bitmap = generateQRCode(newUser, dimen, dimen);
 
 
                 QRCode.setVisibility(View.VISIBLE);
@@ -133,18 +136,20 @@ public class GenerateQRCode extends AppCompatActivity {
                 editdata.setText("");
 
 
-            // Create a new user and save it
-            User newUser = new User(data,userid, amount, pin, qrCodeData);
-           users.add(newUser);
+
             } catch (WriterException e) {
                 e.printStackTrace();
             }
         }
 
 
-    private Bitmap generateQRCode(String data, int width, int height) throws WriterException {
-        QRCodeWriter qrCodeWriter = new QRCodeWriter();
-        BitMatrix bitMatrix = qrCodeWriter.encode(data, BarcodeFormat.QR_CODE, width, height);
+    private Bitmap generateQRCode(User user, int width, int height) throws WriterException {
+        try {
+            // Concatenate user data into a single string
+            String userData = user.getUsername() + "," + user.getUserId() + "," + user.getAmount();
+
+            QRCodeWriter qrCodeWriter = new QRCodeWriter();
+        BitMatrix bitMatrix = qrCodeWriter.encode(userData, BarcodeFormat.QR_CODE, width, height);
         int bmWidth = bitMatrix.getWidth();
         int bmHeight = bitMatrix.getHeight();
         int[] pixels = new int[bmWidth * bmHeight];
@@ -157,6 +162,10 @@ public class GenerateQRCode extends AppCompatActivity {
         Bitmap bitmap = Bitmap.createBitmap(bmWidth, bmHeight, Bitmap.Config.ARGB_8888);
         bitmap.setPixels(pixels, 0, bmWidth, 0, 0, bmWidth, bmHeight);
         return bitmap;
+    } catch (WriterException e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 
     private void saveQRCode() {

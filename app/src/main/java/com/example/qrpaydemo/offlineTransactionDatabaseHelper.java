@@ -96,4 +96,22 @@ public class offlineTransactionDatabaseHelper extends SQLiteOpenHelper {
         db.execSQL("DELETE FROM " + TABLE_NAME);
         db.close();
     }
+
+   /* public User getUserByUsername(String username) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.query(TABLE_USERS, null, COLUMN_USERNAME + "=?", new String[]{username}, null, null, null);
+
+        if (cursor != null) {
+            cursor.moveToFirst();
+            User user = new User();
+            user.setUsername(cursor.getString(cursor.getColumnIndex(COLUMN_USERNAME)));
+            user.setAmount(cursor.getDouble(cursor.getColumnIndex(COLUMN_BALANCE)));
+            user.setUserId(cursor.getString(cursor.getColumnIndex(COLUMN_WALLET_ID)));
+            cursor.close();
+            return user;
+        } else {
+            return null;
+        }
+    }*/
 }
+

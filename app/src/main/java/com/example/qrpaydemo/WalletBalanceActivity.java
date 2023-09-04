@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.os.Handler;
 import android.view.View;
@@ -111,6 +112,7 @@ public class WalletBalanceActivity extends AppCompatActivity {
                 String username = Textusername.getText().toString();
 
                 offlineTransactionDatabaseHelper dbHelper = new offlineTransactionDatabaseHelper(context);
+
                 User newUser = new User(userId,username,amountTexts,pinTexts,null);
 
                 // Insert the transaction into the database
