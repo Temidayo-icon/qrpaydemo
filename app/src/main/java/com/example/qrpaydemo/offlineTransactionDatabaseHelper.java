@@ -81,7 +81,7 @@ public class offlineTransactionDatabaseHelper extends SQLiteOpenHelper {
         if (cursor.moveToFirst()) {
             do {
                 String userId = cursor.getString(0);
-                String amount = cursor.getString(1);
+                double amount = Double.parseDouble(cursor.getString(1));
                 transactions.add(new User(userId, amount));
             } while (cursor.moveToNext());
         }
