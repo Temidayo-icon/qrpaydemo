@@ -14,18 +14,19 @@ import java.util.List;
 
 public class offlineTransactionDatabaseHelper extends SQLiteOpenHelper {
 
-    private static final String DATABASE_NAME = "user.db";
+    public static final String DATABASE_NAME = "user.db";
 
 
-    private static final int DATABASE_VERSION = 1;
+    public static final int DATABASE_VERSION = 1;
 
-    private static final String TABLE_NAME = "transcactions";
+    public static final String TABLE_NAME = "transcactions";
 
-    private static final String COLUMN_ID = "id";
-    private static final String COLUMN_USER_ID = "user_id";
+    public static final String COLUMN_ID = "id";
+    public static final String COLUMN_USER_ID = "user_id";
 
-    private static final String COLUMN_USERNAME = "username";
-    private static final String COLUMN_AMOUNT = "amount";
+    public static final String COLUMN_USERNAME = "username";
+    public static final String COLUMN_AMOUNT = "amount";
+    public static final String COLUMN_USER_DATA = "user_data";
 
     public offlineTransactionDatabaseHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -42,6 +43,7 @@ public class offlineTransactionDatabaseHelper extends SQLiteOpenHelper {
     public void onCreate(SQLiteDatabase db) {
         String createTableQuery = "CREATE TABLE " + TABLE_NAME + " (" +
                 COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                COLUMN_USER_DATA + " TEXT," +
                 COLUMN_USER_ID + " INTEGER, " +
                 COLUMN_USERNAME + " TEXT, " +
                 COLUMN_AMOUNT + " REAL" +
@@ -76,10 +78,12 @@ public class offlineTransactionDatabaseHelper extends SQLiteOpenHelper {
     public List<User> getAllTransactions() {
         List<User> transactions = new ArrayList<>();
         SQLiteDatabase db = this.getReadableDatabase();
-        Cursor cursor = db.rawQuery("SELECT * FROM " + TABLE_NAME, null);
+        Cursor cursor = db.rawQuery("SELECT * FROM " + TABLE_NAME, new String[]{COLUMN_USER_DATA}, null);
 
         if (cursor.moveToFirst()) {
             do {
+                String jsonData = cursor.getString(cursor.getColumnIndexOrThrow(offlineTransactionDatabaseHelper.COLUMN_USER_DATA));
+                String user_data = cursor.getString(0);
                 String userId = cursor.getString(0);
                 double amount = Double.parseDouble(cursor.getString(1));
                 transactions.add(new User(userId, amount));
@@ -97,21 +101,21 @@ public class offlineTransactionDatabaseHelper extends SQLiteOpenHelper {
         db.close();
     }
 
-   /* public User getUserByUsername(String username) {
+    public User getUserByUsername(String username) {
         SQLiteDatabase db = this.getReadableDatabase();
-        Cursor cursor = db.query(TABLE_USERS, null, COLUMN_USERNAME + "=?", new String[]{username}, null, null, null);
+        Cursor cursor = db.query(TABLE_NAME, null, COLUMN_USERNAME + "=?", new String[]{username}, null, null, null);
 
         if (cursor != null) {
             cursor.moveToFirst();
-            User user = new User();
-            user.setUsername(cursor.getString(cursor.getColumnIndex(COLUMN_USERNAME)));
-            user.setAmount(cursor.getDouble(cursor.getColumnIndex(COLUMN_BALANCE)));
-            user.setUserId(cursor.getString(cursor.getColumnIndex(COLUMN_WALLET_ID)));
+            User user = new User(username);
+            user.setUsername(cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_USERNAME)));
+            user.setAmount(cursor.getDouble(cursor.getColumnIndexOrThrow(COLUMN_AMOUNT)));
+            user.setUserId(cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_USER_ID)));
             cursor.close();
             return user;
         } else {
             return null;
         }
-    }*/
+    }
 }
 

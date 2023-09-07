@@ -1,6 +1,9 @@
 package com.example.qrpaydemo;
 
+import android.content.ContentValues;
 import android.content.pm.PackageManager;
+import android.database.SQLException;
+import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.Point;
@@ -27,6 +30,9 @@ import com.google.zxing.WriterException;
 import com.google.zxing.common.BitMatrix;
 import com.google.zxing.qrcode.QRCodeWriter;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -48,12 +54,25 @@ public class GenerateQRCode extends AppCompatActivity {
 
     // Track whether the QR code has been generated
     private boolean isQRCodeGenerated = false;
+    private offlineTransactionDatabaseHelper dbHelper;
+    private List<User> usersList;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_generate_qrcode);
+
+        UserDataDAO userDAO = new UserDataDAO(this);
+        userDAO.open();
+
+        dbHelper = new offlineTransactionDatabaseHelper(this);
+
+        // Initialize the usersList
+        usersList = new ArrayList<>();
+
+        // Retrieve users from the database and populate the usersList
+
 
         gentext = findViewById(R.id.gentext);
         QRCode = findViewById(R.id.QRCode);
@@ -91,6 +110,20 @@ public class GenerateQRCode extends AppCompatActivity {
         String userid = edituserid.getText().toString();
         int pin = Integer.parseInt(editpin.getText().toString());
         double amount = Double.parseDouble(editamount.getText().toString());
+
+        //Concatenate user data into a single string
+
+        // Create a JSON object with user information
+        JSONObject userData = new JSONObject();
+        try {
+            userData.put("username", data);
+            userData.put("userId", userid);
+            userData.put("amount", amount);
+
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
         if (data.isEmpty() || userid.isEmpty() || editpin.getText().toString().isEmpty() || editamount.getText().toString().isEmpty() ) {
             Toast.makeText(GenerateQRCode.this, "Please enter all data required to generate QR code", Toast.LENGTH_SHORT).show();
         }
@@ -122,8 +155,10 @@ public class GenerateQRCode extends AppCompatActivity {
             // Create a new user and save it
             User newUser = new User(data,userid, amount, pin, qrCodeData);
             users.add(newUser);
+
                 // Use ZXing library to generate the QR code
-                bitmap = generateQRCode(newUser, dimen, dimen);
+                //bitmap = generateQRCode(newUser, dimen, dimen);
+            bitmap = generateQRCode(userData.toString(), dimen, dimen);
 
 
                 QRCode.setVisibility(View.VISIBLE);
@@ -131,6 +166,8 @@ public class GenerateQRCode extends AppCompatActivity {
                 QRCode.setImageBitmap(bitmap);
 
                 isQRCodeGenerated = true;
+
+            addUserToDatabase(newUser);
 
                 // Clear the user input
                 editdata.setText("");
@@ -142,8 +179,56 @@ public class GenerateQRCode extends AppCompatActivity {
             }
         }
 
+    // Method to add a new user to the database
+    private void addUserToDatabase(User user) {
+        SQLiteDatabase db = dbHelper.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put("userId", user.getUserId());
+        values.put("username", user.getUsername());
+        values.put("amount", user.getAmount());
+        values.put("pin", user.getPin());
+        values.put("qrCodeData", user.getQrCodeData());
 
-    private Bitmap generateQRCode(User user, int width, int height) throws WriterException {
+        try {
+            db.insertOrThrow("Users", null, values);
+            usersList.add(user); // Add the user to the in-memory list
+            Toast.makeText(this, "User added to the database", Toast.LENGTH_SHORT).show();
+        } catch (SQLException e) {
+            // Handle the exception (e.g., duplicate user ID)
+            Toast.makeText(this, "Failed to add user to the database", Toast.LENGTH_SHORT).show();
+        } finally {
+            db.close();
+        }
+    }
+
+    private Bitmap generateQRCode(String jsonData, int width, int height) throws WriterException {
+        try {
+            // Concatenate user data into a single string
+            //String userData = user.getUsername() + "," + user.getUserId() + "," + user.getAmount();
+
+            QRCodeWriter qrCodeWriter = new QRCodeWriter();
+            BitMatrix bitMatrix = qrCodeWriter.encode(jsonData, BarcodeFormat.QR_CODE, width, height);
+            int bmWidth = bitMatrix.getWidth();
+            int bmHeight = bitMatrix.getHeight();
+            int[] pixels = new int[bmWidth * bmHeight];
+            for (int y = 0; y < bmHeight; y++) {
+                int offset = y * bmWidth;
+                for (int x = 0; x < bmWidth; x++) {
+                    pixels[offset + x] = bitMatrix.get(x, y) ? Color.BLACK : Color.WHITE;
+                }
+            }
+            Bitmap bitmap = Bitmap.createBitmap(bmWidth, bmHeight, Bitmap.Config.ARGB_8888);
+            bitmap.setPixels(pixels, 0, bmWidth, 0, 0, bmWidth, bmHeight);
+            return bitmap;
+        } catch (WriterException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+
+
+   /* private Bitmap generateQRCode(User user, int width, int height) throws WriterException {
         try {
             // Concatenate user data into a single string
             String userData = user.getUsername() + "," + user.getUserId() + "," + user.getAmount();
@@ -166,7 +251,7 @@ public class GenerateQRCode extends AppCompatActivity {
             e.printStackTrace();
             return null;
         }
-    }
+    } */
 
     private void saveQRCode() {
         // Check if the app has permission to write to external storage

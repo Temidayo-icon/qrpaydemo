@@ -84,6 +84,8 @@ public class ScanQRcode extends AppCompatActivity {
             barcodeView.decodeContinuous(callback);
 
             beepManager = new BeepManager(this);
+
+
         }
 
     private void processScannedQRCode(String scannedData) {
@@ -102,6 +104,9 @@ public class ScanQRcode extends AppCompatActivity {
 
     private void openUserDetailsActivity(String userId) {
         Intent intent = new Intent(this, WalletBalanceActivity.class);
+
+        // Pass the user ID to the WalletBalanceActivity
+        intent.putExtra("userId", userId);
 
         // Pass the users data to the scanning activity
         intent.putParcelableArrayListExtra("users", (ArrayList<? extends Parcelable>) users);

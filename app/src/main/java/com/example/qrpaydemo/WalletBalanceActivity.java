@@ -99,6 +99,13 @@ public class WalletBalanceActivity extends AppCompatActivity {
         // Initialize the list of offline transactions from local storage
         offlineTransactions = loadOfflineTransactions();
 
+
+        // Get the user ID passed from the ScanQRcode activity
+        String userId = getIntent().getStringExtra("userId");
+        String username = getIntent().getStringExtra("username");
+        TextuserId.setText(userId);
+        Textusername.setText(username);
+
         // Handle the Send Money button click
         buttonSendMoney.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -110,6 +117,8 @@ public class WalletBalanceActivity extends AppCompatActivity {
                 int pinTexts = Integer.parseInt(editTextPin.getText().toString());
                 String userId = TextuserId.getText().toString();
                 String username = Textusername.getText().toString();
+
+
 
                 offlineTransactionDatabaseHelper dbHelper = new offlineTransactionDatabaseHelper(context);
 

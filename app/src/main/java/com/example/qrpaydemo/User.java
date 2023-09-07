@@ -19,6 +19,8 @@ public class User implements Parcelable{
 
     }
 
+
+
     public int getPin() {
         return pin;
     }
@@ -67,6 +69,7 @@ public class User implements Parcelable{
         this.username = username;
         this.qrCodeData = qrCodeData;
         this.amount = amount;
+        this.pin = pin;
     }
 
     public String getUserId() {
