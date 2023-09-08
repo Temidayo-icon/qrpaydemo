@@ -143,7 +143,7 @@ public class WalletBalanceActivity extends AppCompatActivity {
                     double transferAmount = Double.parseDouble(amountText);
 
                     // Check if the PIN is correct (replace '1234' with the user's actual PIN)
-                    if (pinText.equals("1234")) {
+                    if (pinText.equals(newUser.getPin())) {
                         // Check if the wallet has sufficient balance
                         if (walletBalance >= transferAmount) {
                             // Deduct the transfer amount from the wallet balance

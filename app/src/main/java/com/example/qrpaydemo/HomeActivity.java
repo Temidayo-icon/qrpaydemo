@@ -2,13 +2,16 @@ package com.example.qrpaydemo;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.net.wifi.p2p.WifiP2pManager;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.Toast;
 
 public class HomeActivity extends AppCompatActivity {
 
@@ -27,6 +30,8 @@ public class HomeActivity extends AppCompatActivity {
 
         genbtn = findViewById(R.id.genbtn);
         Scanbtn = findViewById(R.id.Scanbtn);
+
+        showOptionsDialog();
 
 
         // Indicates a change in the Wi-Fi Direct status.
@@ -62,5 +67,40 @@ public class HomeActivity extends AppCompatActivity {
         });
         manager = (WifiP2pManager) getSystemService(Context.WIFI_P2P_SERVICE);
         channel = manager.initialize(this, getMainLooper(), null);
+    }
+
+    private void showOptionsDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Select an Option")
+                .setMessage("Do you want to send or receive?")
+                .setPositiveButton("Send", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        // Switch on hotspot
+                        startHotspot();
+                    }
+                })
+                .setNegativeButton("Receive", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        // Switch on Wi-Fi
+                        enableWifi();
+                    }
+                })
+                .show();
+    }
+    private void startHotspot() {
+        // Implement code to start hotspot here
+        // Make sure you have the necessary permissions
+        // You can use the code from previous responses to enable hotspot
+        // For simplicity, you can show a Toast message here indicating that hotspot is being started.
+        Toast.makeText(this, "Starting Hotspot...", Toast.LENGTH_SHORT).show();
+    }
+    private void enableWifi() {
+        // Implement code to enable Wi-Fi here
+        // Make sure you have the necessary permissions
+        // You can use the code from previous responses to enable Wi-Fi
+        // For simplicity, you can show a Toast message here indicating that Wi-Fi is being enabled.
+        Toast.makeText(this, "Enabling Wi-Fi...", Toast.LENGTH_SHORT).show();
     }
 }

@@ -53,9 +53,21 @@ public class ScanQRcode extends AppCompatActivity {
 
             // Check if the scanned QR code is assigned to a user
             if (isValidUserQRCode(result.getText())) {
+                // Extract user ID and username from the QR code data
+                String[] qrCodeDataParts = result.getText().split(":"); // Assuming the QR code data is formatted as "userId:username"
+                if (qrCodeDataParts.length == 2) {
+                    String userId = qrCodeDataParts[0];
+                    String username = qrCodeDataParts[1];
                 // Navigate to the Wallet Balance activity
                 Intent intent = new Intent(ScanQRcode.this, WalletBalanceActivity.class);
+                intent.putExtra("userId", userId);
+                intent.putExtra("username", username);
                 startActivity(intent);
+                } else {
+                    // Show an error message for invalid QR code data format
+                    Toast.makeText(ScanQRcode.this, "Invalid QR code data format", Toast.LENGTH_SHORT).show();
+                }
+
             }
 
             //Added preview of scanned barcode
@@ -93,7 +105,7 @@ public class ScanQRcode extends AppCompatActivity {
         for (User user : users) {
             if (user.getQrCodeData().equals(scannedData)) {
                 // User found, open user details activity
-                openUserDetailsActivity(user.getUserId());
+                openUserDetailsActivity(user.getUserId(),user.getUsername());
                 return;
             }
         }
@@ -102,11 +114,12 @@ public class ScanQRcode extends AppCompatActivity {
         Toast.makeText(this, "User not found", Toast.LENGTH_SHORT).show();
     }
 
-    private void openUserDetailsActivity(String userId) {
+    private void openUserDetailsActivity(String userId, String username) {
         Intent intent = new Intent(this, WalletBalanceActivity.class);
 
         // Pass the user ID to the WalletBalanceActivity
         intent.putExtra("userId", userId);
+        intent.putExtra("username", username);
 
         // Pass the users data to the scanning activity
         intent.putParcelableArrayListExtra("users", (ArrayList<? extends Parcelable>) users);
