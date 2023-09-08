@@ -7,11 +7,16 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.net.wifi.WifiConfiguration;
+import android.net.wifi.WifiManager;
 import android.net.wifi.p2p.WifiP2pManager;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
+
+import java.lang.reflect.Method;
 
 public class HomeActivity extends AppCompatActivity {
 
@@ -77,7 +82,7 @@ public class HomeActivity extends AppCompatActivity {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         // Switch on hotspot
-                        startHotspot();
+                        startHotspot(HomeActivity.this);
                     }
                 })
                 .setNegativeButton("Receive", new DialogInterface.OnClickListener() {
@@ -89,18 +94,63 @@ public class HomeActivity extends AppCompatActivity {
                 })
                 .show();
     }
-    private void startHotspot() {
+    public static void startHotspot(Context context) {
         // Implement code to start hotspot here
         // Make sure you have the necessary permissions
         // You can use the code from previous responses to enable hotspot
         // For simplicity, you can show a Toast message here indicating that hotspot is being started.
-        Toast.makeText(this, "Starting Hotspot...", Toast.LENGTH_SHORT).show();
+        // Function to start the Wi-Fi hotspot
+            WifiManager wifiManager = (WifiManager) context.getSystemService(Context.WIFI_SERVICE);
+
+            if (wifiManager != null) {
+                // Check if Wi-Fi is enabled, and if so, disable it temporarily
+                boolean wifiEnabled = wifiManager.isWifiEnabled();
+                if (wifiEnabled) {
+                    wifiManager.setWifiEnabled(false);
+                }
+
+                try {
+                    // Create a new Wi-Fi configuration for the hotspot
+                    WifiConfiguration wifiConfiguration = new WifiConfiguration();
+                    wifiConfiguration.SSID = "YourHotspotName"; // Set the hotspot name
+                    wifiConfiguration.preSharedKey = "YourHotspotPassword"; // Set the hotspot password
+                    wifiConfiguration.allowedAuthAlgorithms.set(WifiConfiguration.AuthAlgorithm.OPEN);
+
+                    // Set up the hotspot with the created configuration
+                    Method method = wifiManager.getClass().getMethod("setWifiApEnabled", WifiConfiguration.class, boolean.class);
+                    boolean success = (Boolean) method.invoke(wifiManager, wifiConfiguration, true);
+
+                    // If the hotspot is successfully enabled, return true
+                    if (success) {
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                } finally {
+                    // Restore the Wi-Fi state to what it was before enabling the hotspot
+                    if (wifiEnabled) {
+                        wifiManager.setWifiEnabled(true);
+                    }
+                }
+            }
+
+        //Toast.makeText(this, "Starting Hotspot...", Toast.LENGTH_SHORT).show();
     }
     private void enableWifi() {
         // Implement code to enable Wi-Fi here
         // Make sure you have the necessary permissions
         // You can use the code from previous responses to enable Wi-Fi
         // For simplicity, you can show a Toast message here indicating that Wi-Fi is being enabled.
+        // Check if Wi-Fi is already enabled
+        WifiManager wifiManager = (WifiManager) getSystemService(Context.WIFI_SERVICE);
+        if (!wifiManager.isWifiEnabled()) {
+            // If Wi-Fi is not enabled, open the Wi-Fi settings screen
+            Intent wifiIntent = new Intent(Settings.ACTION_WIFI_SETTINGS);
+            startActivity(wifiIntent);
+        } else {
+            // Wi-Fi is already enabled, show a message to the user
+            Toast.makeText(this, "Wi-Fi is already enabled.", Toast.LENGTH_SHORT).show();
+        }
+
         Toast.makeText(this, "Enabling Wi-Fi...", Toast.LENGTH_SHORT).show();
     }
 }
