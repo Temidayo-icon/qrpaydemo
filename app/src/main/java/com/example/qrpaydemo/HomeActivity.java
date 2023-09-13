@@ -3,6 +3,7 @@ package com.example.qrpaydemo;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.AlertDialog;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -12,6 +13,7 @@ import android.net.wifi.WifiManager;
 import android.net.wifi.p2p.WifiP2pManager;
 import android.os.Bundle;
 import android.provider.Settings;
+import android.se.omapi.Channel;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
@@ -20,12 +22,32 @@ import java.lang.reflect.Method;
 
 public class HomeActivity extends AppCompatActivity {
 
-    private Button genbtn, Scanbtn;
+    WifiP2pManager manager;
+    WifiP2pManager.Channel channel;
+    BroadcastReceiver receiver;
+
+    private Button genbtn, Scanbtn, connectbtn;
 
     private final IntentFilter intentFilter = new IntentFilter();
 
-    WifiP2pManager.Channel channel;
-    WifiP2pManager manager;
+
+    WifiManager wifiManager;
+
+    WifiP2pManager.PeerListListener myPeerListListener;
+
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        registerReceiver(receiver, intentFilter);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        unregisterReceiver(receiver);
+    }
+
 
 
     @Override
@@ -35,8 +57,15 @@ public class HomeActivity extends AppCompatActivity {
 
         genbtn = findViewById(R.id.genbtn);
         Scanbtn = findViewById(R.id.Scanbtn);
+        connectbtn = findViewById(R.id.connectbtn);
 
         showOptionsDialog();
+
+
+
+        manager = (WifiP2pManager) getSystemService(Context.WIFI_P2P_SERVICE);
+        channel = manager.initialize(this, getMainLooper(), null);
+        receiver = new WifiBroadcastReceiver(manager, channel, this);
 
 
         // Indicates a change in the Wi-Fi Direct status.
@@ -70,8 +99,17 @@ public class HomeActivity extends AppCompatActivity {
 
             }
         });
-        manager = (WifiP2pManager) getSystemService(Context.WIFI_P2P_SERVICE);
-        channel = manager.initialize(this, getMainLooper(), null);
+
+        connectbtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent i = new Intent(HomeActivity.this,ConnectDirect.class);
+                startActivity(i);
+            }
+        });
+
+
+
     }
 
     private void showOptionsDialog() {
@@ -83,6 +121,8 @@ public class HomeActivity extends AppCompatActivity {
                     public void onClick(DialogInterface dialog, int which) {
                         // Switch on hotspot
                         startHotspot(HomeActivity.this);
+                       connectbtn.setVisibility(View.VISIBLE);
+
                     }
                 })
                 .setNegativeButton("Receive", new DialogInterface.OnClickListener() {
@@ -90,6 +130,23 @@ public class HomeActivity extends AppCompatActivity {
                     public void onClick(DialogInterface dialog, int which) {
                         // Switch on Wi-Fi
                         enableWifi();
+                        connectbtn.setVisibility(View.GONE);
+
+                        manager.discoverPeers(channel, new WifiP2pManager.ActionListener() {
+                            @Override
+                            public void onSuccess() {
+
+                                Toast.makeText(HomeActivity.this,"Discovery Started",Toast.LENGTH_SHORT).show();
+
+                            }
+
+                            @Override
+                            public void onFailure(int i) {
+
+                                Toast.makeText(HomeActivity.this,"Discovery Started",Toast.LENGTH_SHORT).show();
+
+                            }
+                        });
                     }
                 })
                 .show();
@@ -141,12 +198,14 @@ public class HomeActivity extends AppCompatActivity {
         // You can use the code from previous responses to enable Wi-Fi
         // For simplicity, you can show a Toast message here indicating that Wi-Fi is being enabled.
         // Check if Wi-Fi is already enabled
-        WifiManager wifiManager = (WifiManager) getSystemService(Context.WIFI_SERVICE);
+        wifiManager = (WifiManager) getApplicationContext().getSystemService(Context.WIFI_SERVICE);
         if (!wifiManager.isWifiEnabled()) {
+            wifiManager.setWifiEnabled(true);
             // If Wi-Fi is not enabled, open the Wi-Fi settings screen
             Intent wifiIntent = new Intent(Settings.ACTION_WIFI_SETTINGS);
             startActivity(wifiIntent);
         } else {
+            wifiManager.setWifiEnabled(false);
             // Wi-Fi is already enabled, show a message to the user
             Toast.makeText(this, "Wi-Fi is already enabled.", Toast.LENGTH_SHORT).show();
         }

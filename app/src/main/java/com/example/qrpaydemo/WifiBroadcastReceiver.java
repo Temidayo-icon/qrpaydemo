@@ -1,12 +1,30 @@
 package com.example.qrpaydemo;
 
-import android.app.Activity;
+import static android.os.Looper.getMainLooper;
+
+import static androidx.core.content.ContextCompat.getSystemService;
+
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.net.wifi.p2p.WifiP2pDevice;
 import android.net.wifi.p2p.WifiP2pManager;
+import android.widget.Toast;
 
-public class BroadcastReceiver extends android.content.BroadcastReceiver {
+public class WifiBroadcastReceiver extends BroadcastReceiver {
+     private WifiP2pManager.Channel channel;
+    private WifiP2pManager manager;
+    private HomeActivity hActivity;
+    WifiP2pManager.PeerListListener myPeerListListener;
+
+    public WifiBroadcastReceiver(WifiP2pManager manager, WifiP2pManager.Channel channel, HomeActivity hActivity) {
+        this.channel = channel;
+        this.manager = manager;
+        this.hActivity = hActivity;
+    }
+
+
+
+
     @Override
     public void onReceive(Context context, Intent intent) {
         String action = intent.getAction();
@@ -16,13 +34,18 @@ public class BroadcastReceiver extends android.content.BroadcastReceiver {
             int state = intent.getIntExtra(WifiP2pManager.EXTRA_WIFI_STATE, -1);
             if (state == WifiP2pManager.WIFI_P2P_STATE_ENABLED) {
                // activity.setIsWifiP2pEnabled(true);
+                Toast.makeText(context, "Wifi is ON", Toast.LENGTH_SHORT).show();
             } else {
                // activity.setIsWifiP2pEnabled(false);
+                Toast.makeText(context, "Wifi is OFF", Toast.LENGTH_SHORT).show();
             }
         } else if (WifiP2pManager.WIFI_P2P_PEERS_CHANGED_ACTION.equals(action)) {
 
             // The peer list has changed! We should probably do something about
             // that.
+            if (manager != null) {
+                manager.requestPeers(channel, myPeerListListener);
+            }
 
         } else if (WifiP2pManager.WIFI_P2P_CONNECTION_CHANGED_ACTION.equals(action)) {
 
@@ -35,7 +58,9 @@ public class BroadcastReceiver extends android.content.BroadcastReceiver {
             //fragment.updateThisDevice((WifiP2pDevice) intent.getParcelableExtra(
                   //  WifiP2pManager.EXTRA_WIFI_P2P_DEVICE));
         }
+
     }
+
 
 }
 
