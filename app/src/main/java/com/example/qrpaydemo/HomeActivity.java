@@ -59,7 +59,7 @@ public class HomeActivity extends AppCompatActivity {
         Scanbtn = findViewById(R.id.Scanbtn);
         connectbtn = findViewById(R.id.connectbtn);
 
-        showOptionsDialog();
+        //showOptionsDialog();
 
 
 
@@ -120,7 +120,7 @@ public class HomeActivity extends AppCompatActivity {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         // Switch on hotspot
-                        startHotspot(HomeActivity.this);
+                       // startHotspot(HomeActivity.this);
                        connectbtn.setVisibility(View.VISIBLE);
 
                     }
@@ -129,7 +129,7 @@ public class HomeActivity extends AppCompatActivity {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         // Switch on Wi-Fi
-                        enableWifi();
+                        //enableWifi();
                         connectbtn.setVisibility(View.GONE);
 
                         manager.discoverPeers(channel, new WifiP2pManager.ActionListener() {
@@ -151,7 +151,7 @@ public class HomeActivity extends AppCompatActivity {
                 })
                 .show();
     }
-    public static void startHotspot(Context context) {
+  /*  public static void startHotspot(Context context) {
         // Implement code to start hotspot here
         // Make sure you have the necessary permissions
         // You can use the code from previous responses to enable hotspot
@@ -192,7 +192,7 @@ public class HomeActivity extends AppCompatActivity {
 
         //Toast.makeText(this, "Starting Hotspot...", Toast.LENGTH_SHORT).show();
     }
-    private void enableWifi() {
+   private void enableWifi() {
         // Implement code to enable Wi-Fi here
         // Make sure you have the necessary permissions
         // You can use the code from previous responses to enable Wi-Fi
@@ -211,5 +211,5 @@ public class HomeActivity extends AppCompatActivity {
         }
 
         Toast.makeText(this, "Enabling Wi-Fi...", Toast.LENGTH_SHORT).show();
-    }
+    } */
 }

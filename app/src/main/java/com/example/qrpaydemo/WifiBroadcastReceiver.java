@@ -7,6 +7,7 @@ import static androidx.core.content.ContextCompat.getSystemService;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.net.NetworkInfo;
 import android.net.wifi.p2p.WifiP2pManager;
 import android.widget.Toast;
 
@@ -14,6 +15,7 @@ public class WifiBroadcastReceiver extends BroadcastReceiver {
      private WifiP2pManager.Channel channel;
     private WifiP2pManager manager;
     private HomeActivity hActivity;
+    private ConnectDirect cActivity;
     WifiP2pManager.PeerListListener myPeerListListener;
 
     public WifiBroadcastReceiver(WifiP2pManager manager, WifiP2pManager.Channel channel, HomeActivity hActivity) {
@@ -21,6 +23,12 @@ public class WifiBroadcastReceiver extends BroadcastReceiver {
         this.manager = manager;
         this.hActivity = hActivity;
     }
+    public WifiBroadcastReceiver(WifiP2pManager manager, WifiP2pManager.Channel channel, ConnectDirect cActivity) {
+        this.channel = channel;
+        this.manager = manager;
+        this.cActivity=cActivity;
+    }
+
 
 
 
@@ -44,13 +52,25 @@ public class WifiBroadcastReceiver extends BroadcastReceiver {
             // The peer list has changed! We should probably do something about
             // that.
             if (manager != null) {
-                manager.requestPeers(channel, myPeerListListener);
+                manager.requestPeers(channel, cActivity.myPeerListListener);
             }
 
         } else if (WifiP2pManager.WIFI_P2P_CONNECTION_CHANGED_ACTION.equals(action)) {
 
             // Connection state changed! We should probably do something about
             // that.
+            if(manager==null)
+            {
+                return;
+            }
+            NetworkInfo networkInfo=intent.getParcelableExtra(WifiP2pManager.EXTRA_NETWORK_INFO);
+
+            if(networkInfo.isConnected())
+            {
+                manager.requestConnectionInfo(channel, cActivity.connectionInfoListener);
+            }else{
+                cActivity.connectionStatus.setText("Device is connected");
+            }
 
         } else if (WifiP2pManager.WIFI_P2P_THIS_DEVICE_CHANGED_ACTION.equals(action)) {
            // DeviceListFragment fragment = (DeviceListFragment) activity.getFragmentManager()
