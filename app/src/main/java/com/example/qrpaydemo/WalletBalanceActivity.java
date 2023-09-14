@@ -18,6 +18,13 @@ import android.widget.Toast;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
@@ -213,6 +220,43 @@ public class WalletBalanceActivity extends AppCompatActivity {
             }
         });
     }
+
+    private User loadUserInfoFromFile() {
+        try {
+            // Open the file for reading
+            File file = new File(getFilesDir(), "userInfo.json"); // Use the same filename you used for saving
+
+            // Read the JSON data from the file
+            BufferedReader br = new BufferedReader(new FileReader(file));
+            StringBuilder userJsonStringBuilder = new StringBuilder();
+            String line;
+
+            while ((line = br.readLine()) != null) {
+                userJsonStringBuilder.append(line);
+            }
+
+            br.close();
+
+            // Parse the JSON data into a User object
+            JSONObject userJson = new JSONObject(userJsonStringBuilder.toString());
+            String userId = userJson.getString("userId");
+            String username = userJson.getString("username");
+            double amount = userJson.getDouble("amount");
+            int pin = userJson.getInt("pin");
+
+            return new User(userId, username, amount, pin, null); // Replace "null" with the actual QR code data
+        } catch (JSONException | IOException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+
+
+
+
+
+
 
     // Implement the logic to transfer money to the receiver (you should customize this)
     private void transferMoneyToReceiver(double amount) {

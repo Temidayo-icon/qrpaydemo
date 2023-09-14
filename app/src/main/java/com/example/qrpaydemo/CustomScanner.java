@@ -39,7 +39,7 @@ public class CustomScanner extends Activity implements
 
         switchFlashlightButton = findViewById(R.id.switch_flashlight);
 
-        viewfinderView = findViewById(R.id.zxing_viewfinder_view);
+        //viewfinderView = findViewById(R.id.zxing_viewfinder_view);
 
         // if the device does not have flashlight in its camera,
         // then remove the switch flashlight button...

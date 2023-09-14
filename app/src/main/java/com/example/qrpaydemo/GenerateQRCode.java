@@ -35,6 +35,7 @@ import org.json.JSONObject;
 
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
@@ -169,6 +170,10 @@ public class GenerateQRCode extends AppCompatActivity {
 
             addUserToDatabase(newUser);
 
+            // Save the User information in a file
+            saveUserInfoToFile(newUser);
+
+
                 // Clear the user input
                 editdata.setText("");
 
@@ -223,6 +228,31 @@ public class GenerateQRCode extends AppCompatActivity {
         } catch (WriterException e) {
             e.printStackTrace();
             return null;
+        }
+    }
+
+    private void saveUserInfoToFile(User user) {
+        try {
+            // Serialize the User object to JSON
+            JSONObject userJson = new JSONObject();
+            userJson.put("userId", user.getUserId());
+            userJson.put("username", user.getUsername());
+            userJson.put("amount", user.getAmount());
+            userJson.put("pin", user.getPin());
+
+            String userJsonString = userJson.toString();
+
+            // Create a new file or overwrite the existing one
+            File file = new File(getFilesDir(), "userInfo.json"); // You can choose any filename
+
+            // Write the JSON data to the file
+            FileWriter fileWriter = new FileWriter(file);
+            fileWriter.write(userJsonString);
+            fileWriter.close();
+
+            // Now, user information is saved in the file "userInfo.json" on the phone locally.
+        } catch (JSONException | IOException e) {
+            e.printStackTrace();
         }
     }
 

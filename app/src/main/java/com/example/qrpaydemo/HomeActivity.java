@@ -1,5 +1,9 @@
 package com.example.qrpaydemo;
 
+import static com.example.qrpaydemo.ConnectDirect.MESSAGE_READ;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.AlertDialog;
@@ -12,13 +16,22 @@ import android.net.wifi.WifiConfiguration;
 import android.net.wifi.WifiManager;
 import android.net.wifi.p2p.WifiP2pManager;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.provider.Settings;
 import android.se.omapi.Channel;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.lang.reflect.Method;
+import java.net.InetAddress;
+import java.net.InetSocketAddress;
+import java.net.ServerSocket;
+import java.net.Socket;
 
 public class HomeActivity extends AppCompatActivity {
 
@@ -47,6 +60,79 @@ public class HomeActivity extends AppCompatActivity {
         super.onPause();
         unregisterReceiver(receiver);
     }
+
+    /*public class ServerClass extends Thread{
+        Socket socket;
+        ServerSocket serverSocket;
+
+        @Override
+        public void run() {
+
+            try {
+                serverSocket=new ServerSocket(88888);
+                socket=serverSocket.accept();
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+
+        }
+
+    }
+    private class SendReceive extends Thread{
+        private Socket socket;
+        private InputStream inputStream;
+        private OutputStream outputStream;
+
+        public SendReceive(Socket skt)
+        {
+        socket=skt;
+        try{
+            inputStream=socket.getInputStream();
+            outputStream=socket.getOutputStream();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        }
+
+        @Override
+        public void run() {
+           byte[] buffer=new byte[1024];
+           int bytes;
+
+           while(socket!=null){
+               try {
+                   bytes=inputStream.read(buffer);
+                   if (bytes>0){
+                       handler.obtain
+                   }
+               }catch (IOException e){
+                   e.printStackTrace();
+               }
+
+           }
+        }
+    }
+
+    public class ClientClass extends Thread{
+        Socket socket;
+        String hostAdd;
+
+        public ClientClass(InetAddress hostAddress){
+            hostAdd=hostAddress.getHostAddress();
+            socket=new Socket();
+        }
+
+        @Override
+        public void run() {
+            try {
+                socket.connect(new InetSocketAddress(hostAdd,8888),500);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+
+        }
+    }*/
 
 
 
@@ -111,6 +197,8 @@ public class HomeActivity extends AppCompatActivity {
 
 
     }
+
+
 
     private void showOptionsDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
